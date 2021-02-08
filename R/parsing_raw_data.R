@@ -174,7 +174,7 @@ merging_by_sample <- function(vector_w_dataframes, run_date){
 
   # Add genus name and run_date
   merged_dataset <- merged_dataset %>%
-    left_join(refsamp::refsamp_genus, by = "Sample")  %>%
+    left_join(refsamp_genus, by = "Sample")  %>%
     mutate("Run_date" = run_date)
 
   return(merged_dataset)

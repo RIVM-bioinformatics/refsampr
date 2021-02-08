@@ -9,9 +9,9 @@ editor_options:
   chunk_output_type: inline
 params:
   input_dir:
-    value: "x"
+    value: "C:/Users/alehd/Documents/Test_refsamp/Juno_results/Juno_results/200922_NB502001_0153_AHGNLNAFX2_0007/"
   history_data: 
-    value: "x"
+    value: "C:/Users/alehd/Documents/Test_refsamp/out/history_data.csv"
 ---
 
 <style>
@@ -24,10 +24,11 @@ text-align: justify}
 knitr::opts_chunk$set(echo = FALSE)
 
 #Load libraries 
-#devtools::load_all()
 library(dplyr)
+library(ggplot2)
 library(scales)
 library(refsamp)
+
 
 ```
 
