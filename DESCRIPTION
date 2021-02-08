@@ -1,0 +1,28 @@
+Package: refsamp
+Type: Package
+Title: Making QC report from Reference Samples (analyzed with Juno pipeline)
+Version: 0.1.0
+Authors@R: person("Alejandra", "Hern<U+00E1>ndez Segura", email = "ale.hdz.segura@gmail.com", role = c("aut", "cre"))
+Description: At the RIVM, we use the Juno_pipeline (https://github.com/AleSR13/Juno_pipeline)
+    to do pre-processing and de novo assembly of bacterial isolates. Since 2020, we have also
+    included a set of reference samples that let us monitor the quality of the data produced
+    by the NGS sequencing facility. This package helps generating quality control (QC) reports
+    for monitoring the quality of our data.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr, 
+    DT,
+    ggplot2, 
+    knitr,
+    plotly, 
+    purrr, 
+    readr, 
+    rmarkdown, 
+    scales,
+    stringr,
+    tidyr 
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)

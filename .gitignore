@@ -1,0 +1,12 @@
+# R defaults
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Files to ignore
+
+# Directories to ignore
+Juno_results/
+R/dev_functions.R
+out/

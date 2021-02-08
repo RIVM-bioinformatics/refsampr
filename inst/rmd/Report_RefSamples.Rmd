@@ -1,0 +1,145 @@
+---
+title: "Report Reference Samples"
+author: "Alejandra Hernandez Segura"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output: 
+  html_document:
+    toc_float: True
+editor_options: 
+  chunk_output_type: inline
+params:
+  input_dir:
+    value: "x"
+  history_data: 
+    value: "x"
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+#Load libraries 
+#devtools::load_all()
+library(dplyr)
+library(scales)
+library(refsamp)
+
+```
+
+**Run folder:** ```r basename(params$input_dir)```
+
+```{r load_data}
+
+quast_report <- extract_quast(params$input_dir)
+
+checkm_report <- extract_checkm(params$input_dir)
+
+bbtools_report <- extract_bbtools(params$input_dir)
+
+run_date <- get_run_date(params$input_dir)
+
+```
+
+```{r refsamp_run_metrics}
+
+refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "checkm_report"), run_date = run_date)
+
+if ( file.exists(params$history_data) ) {
+  
+  history_data <- readr::read_csv(params$history_data, col_types = "cnnnnnnnnnnncc") %>%
+    bind_rows(refsamp_run_metrics) %>%
+    distinct()
+  
+} else {
+  
+  history_data <- refsamp_run_metrics
+  
+}
+
+```
+
+## Quality Measures 
+
+```{r plot_contigs, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "# contigs") +
+  labs(title = "Number of contigs per reference sample", y = "Number of contigs ( >500nt )", x = "")
+
+```
+
+```{r plot_length, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "Total length") + 
+   labs(title = "Total length per reference sample", y = "Total length", x = "") +
+   scale_y_continuous( label = comma_format(accuracy = 1) )
+ 
+```
+
+```{r plot_N50, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "N50") + 
+  labs(title = "N50 per reference sample", y = "N50", x = "") +
+   scale_y_continuous( label = comma_format(accuracy = 1) )
+
+```
+
+```{r plot_L50, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "L50") + 
+  labs(title = "L50 per reference sample", y = "L50 ( bp x 1000 )", x = "") +
+   scale_y_continuous( label = comma_format(accuracy = 1) )
+
+```
+
+
+```{r plot_completeness, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "completeness") + 
+  labs(x = NULL, y = "Completeness", title = "Completeness (compared to reference genome)") +
+   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+
+```
+
+```{r plot_contamination, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "contamination") + 
+  labs(x = NULL, y = "Contamination", title = "Contamination of sample (reads that do not belong to reference genome)")+
+   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+
+```
+
+
+```{r plot_perc_mapped, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "Percent mapped") + 
+  labs(x = NULL, y = "Mapped Reads", title = "Percentage of mapped reads")+
+   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+
+```
+
+```{r plot_coverage, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "Average coverage") + 
+  labs(x = NULL, y = "Average coverage", title = "Coverage") +
+   scale_y_continuous( label = comma_format(accuracy = 1) )
+
+```
+
+```{r plot_perc_covered, warning=FALSE, message=FALSE}
+
+plot_time_metrics(history_data, "Percent of reference bases covered") + 
+  labs(x = NULL, y = "Reference Bases Covered", title = "Percent of reference bases covered")+
+   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+
+```
+
+```{r save_history_data}
+
+write.csv(history_data, paste0(params$history_data), row.names = FALSE)
+
+```
