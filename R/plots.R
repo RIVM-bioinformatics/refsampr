@@ -22,7 +22,7 @@ plot_time_metrics <- function(dataset, metric){
 
   ggplot( dataset, aes(x = Run_date, y = !!as.name(metric), color = Genus))+
     geom_smooth(formula = y ~ x, show.legend = F, method = "loess")+
-    geom_point(size = 2)+
+    geom_point(size = 3)+
     scale_color_brewer(palette = "Dark2", na.value = "gray")+
     theme_light()+
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -48,16 +48,21 @@ make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
   stopifnot(dir.exists(dirname(output_report)))
   stopifnot(stringr::str_detect(output_report, ".html$"))
 
+  input_dir <- normalizePath(input_dir, winslash = "/")
+  output_report <- normalizePath(output_report, winslash = "/")
+
+
   if( is.null(history_data) ){
-    history_data <- paste0( dirname(output_report), "history_data.csv" )
+    history_data <- paste0( dirname(output_report), "/history_data.csv" )
   } else{
     stopifnot(dir.exists(dirname(history_data)))
     stopifnot(stringr::str_detect(history_data, ".csv$"))
+    history_data <- normalizePath(history_data, winslash = "/")
   }
 
   rmarkdown::render(system.file("rmd", "Report_RefSamples.Rmd", package = "refsamp"),
                    output_file = output_report,
-                   envir = parent.frame(), # See explanation: https://github.com/rstudio/rmarkdown/issues/934
+                   envir = parent.frame(), # Explanation: https://github.com/rstudio/rmarkdown/issues/934
                    params = list(input_dir = input_dir,
                                  history_data = history_data))
 }
