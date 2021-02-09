@@ -4,7 +4,10 @@ author: "Alejandra Hernandez Segura"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 output: 
   html_document:
-    toc_float: True
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    self_contained: yes
 editor_options: 
   chunk_output_type: inline
 params:
@@ -21,14 +24,16 @@ text-align: justify}
 
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.retina = 2,
+                      fig.height = 4, fig.width = 7)
 
 #Load libraries 
 library(dplyr)
 library(ggplot2)
 library(scales)
 library(refsamp)
-
 
 ```
 
@@ -64,80 +69,162 @@ if ( file.exists(params$history_data) ) {
 
 ```
 
-## Quality Measures 
+A set of reference samples are continuously sequenced in our in house sequencing facility and the assembly metrics are monitored to ensure quality of the data produced. All samples were pre-processed and their quality was analyzed using the [Juno pipeline](https://github.com/AleSR13/Juno_pipeline). Some of the quality metrics are analyzed and followed over time.
 
-```{r plot_contigs, warning=FALSE, message=FALSE}
+**List of reference samples:**
 
-plot_time_metrics(history_data, "# contigs") +
-  labs(title = "Number of contigs per reference sample", y = "Number of contigs ( >500nt )", x = "")
+```{r refsamp_genus, out.width="30%"}
+
+refsamp:::refsamp_genus %>% knitr::kable()
 
 ```
 
-```{r plot_length, warning=FALSE, message=FALSE}
+## Quality assessment statistics with QUAST
+
+### Number of contigs
+
+Number of contigs
+  : total number of contigs in the assembly [REF](https://academic.oup.com/bioinformatics/article/29/8/1072/228832?login=true).
+
+In the Juno pipeline, scaffolds smaller than 500 nt are filtered out. This plot shows the number of contigs that were kept in the pipeline.
+
+```{r plot_contigs}
+
+plot_time_metrics(history_data, "# contigs") +
+  labs(y = "Number of contigs ( >500nt )", x = "") +
+   scale_y_continuous( label = comma_format(accuracy = 0.1) )
+
+```
+
+### Total length
+
+Total length
+  : Total number of bases in the assembly [REF](https://academic.oup.com/bioinformatics/article/29/8/1072/228832?login=true). 
+```{r plot_length}
 
 plot_time_metrics(history_data, "Total length") + 
-   labs(title = "Total length per reference sample", y = "Total length", x = "") +
+   labs(y = "Total length", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
  
 ```
 
-```{r plot_N50, warning=FALSE, message=FALSE}
+### N50
+
+N50 
+  : The largest contig length, L, such that using contigs of length forumla accounts for at least 50% of the bases of the assembly [REF](https://academic.oup.com/bioinformatics/article/29/8/1072/228832?login=true). 
+  
+The N50 relates to contiguity of the assembly. The N50 value is a threshold contig size. If contigs with size N50 or larger are kept, half of the reference genome can be covered [REF](http://www.metagenomics.wiki/pdf/definition/assembly/n50).
+
+```{r plot_N50}
 
 plot_time_metrics(history_data, "N50") + 
-  labs(title = "N50 per reference sample", y = "N50", x = "") +
+  labs(y = "N50 (bp)", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
 
 ```
 
-```{r plot_L50, warning=FALSE, message=FALSE}
+### L50
+
+L50
+  : Smallest number of contigs whose length sum makes up half of genome size [REF](https://en.wikipedia.org/wiki/N50,_L50,_and_related_statistics).
+
+```{r plot_L50}
 
 plot_time_metrics(history_data, "L50") + 
-  labs(title = "L50 per reference sample", y = "L50 ( bp x 1000 )", x = "") +
+  labs(y = "L50", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
 
 ```
 
+### GC content
 
-```{r plot_completeness, warning=FALSE, message=FALSE}
+GC content
+  : percentage of nucleotides that are either G or C. 
+  
+A deviation from the actual (literature reported) GC content in the reference genome can reflect problems in the sequencing of that particular genus/species, contamination or even swapping of samples. 
 
-plot_time_metrics(history_data, "completeness") + 
-  labs(x = NULL, y = "Completeness", title = "Completeness (compared to reference genome)") +
-   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+```{r}
+
+plot_time_metrics(history_data, "GC (%)") + 
+  labs(x = NULL, y = "GC content") +
+  scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+  
 
 ```
 
-```{r plot_contamination, warning=FALSE, message=FALSE}
 
-plot_time_metrics(history_data, "contamination") + 
-  labs(x = NULL, y = "Contamination", title = "Contamination of sample (reads that do not belong to reference genome)")+
-   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+## Quality assessment statistics with Bbtools
 
-```
+### Percent mapped
 
+Percent mapped
+  : percentage of reads that could be mapped back to the assembly.
 
-```{r plot_perc_mapped, warning=FALSE, message=FALSE}
+```{r plot_perc_mapped}
 
 plot_time_metrics(history_data, "Percent mapped") + 
-  labs(x = NULL, y = "Mapped Reads", title = "Percentage of mapped reads")+
+  labs(x = NULL, y = "Mapped Reads")+
    scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
 
 ```
 
-```{r plot_coverage, warning=FALSE, message=FALSE}
+### Average depth of coverage 
+
+Coverage, depth of coverage or mapping depth
+  : average number of times a base of a genome is sequenced. Calculated as the number of bases of all short reads that match a genome divided by the length of this genome. It is often expressed as 1X, 2X, 3X,... (1, 2, or, 3 times coverage) [REF](http://www.metagenomics.wiki/pdf/definition/coverage-read-depth).
+
+```{r plot_coverage}
 
 plot_time_metrics(history_data, "Average coverage") + 
-  labs(x = NULL, y = "Average coverage", title = "Coverage") +
-   scale_y_continuous( label = comma_format(accuracy = 1) )
+  labs(x = NULL, y = "Average coverage") +
+   scale_y_continuous( label = comma_format(accuracy = 1, suffix = " X") )
 
 ```
 
-```{r plot_perc_covered, warning=FALSE, message=FALSE}
+### Percent of reference bases covered
+
+Percent of reference bases covered 
+  : percentage of bases of a reference genome that are covered by at least 1 read. 
+
+
+```{r plot_perc_covered}
 
 plot_time_metrics(history_data, "Percent of reference bases covered") + 
-  labs(x = NULL, y = "Reference Bases Covered", title = "Percent of reference bases covered")+
+  labs(x = NULL, y = "Reference Bases Covered")+
+  scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
+
+```
+
+## Quality assessment statistics with CheckM
+
+CheckM makes use of a set of taxon-specific marker genes. It calculates statistics based on that.
+
+### Contamination
+
+Contamination
+  : estimated from the number of multicopy marker genes identified in each marker set [REF](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4484387/).
+
+```{r plot_contamination}
+
+plot_time_metrics(history_data, "contamination") + 
+  labs(x = NULL, y = "Contamination")+
+   scale_y_continuous( label = percent_format(accuracy = 0.01, scale = 1) )
+
+```
+
+### Genome completeness
+
+Genome completeness
+  : estimated as the number of marker sets present in a genome taking into account that only a portion of a marker set may be identified [REF](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4484387/).
+
+```{r plot_completeness}
+
+plot_time_metrics(history_data, "completeness") + 
+  labs(x = NULL, y = "Completeness") +
    scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
 
 ```
+
 
 ```{r save_history_data}
 
