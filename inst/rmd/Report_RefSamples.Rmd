@@ -59,7 +59,9 @@ if ( file.exists(params$history_data) ) {
   
   history_data <- readr::read_csv(params$history_data, col_types = "cnnnnnnnnnnncc") %>%
     bind_rows(refsamp_run_metrics) %>%
-    distinct()
+    distinct() %>%
+    mutate(Run_date = as.Date(.$Run_date, format = "%y-%m-%d")) %>%
+    filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-180))
   
 } else {
   

@@ -22,7 +22,7 @@ plot_time_metrics <- function(dataset, metric){
 
   ggplot( dataset, aes(x = Run_date, y = !!as.name(metric), color = Genus))+
     geom_smooth(formula = y ~ x, show.legend = F, method = "loess")+
-    geom_point(size = 3)+
+    geom_point(size = 2)+
     scale_color_brewer(palette = "Dark2", na.value = "gray")+
     theme_light()+
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
