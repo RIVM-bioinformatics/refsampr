@@ -53,14 +53,15 @@ run_date <- get_run_date(params$input_dir)
 
 ```{r refsamp_run_metrics}
 
-refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "checkm_report"), run_date = run_date)
+refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "checkm_report"), 
+                                         run_date = as.character(as.Date(run_date, format = "%y-%m-%d")))
 
 if ( file.exists(params$history_data) ) {
   
   history_data <- readr::read_csv(params$history_data, col_types = "cnnnnnnnnnnncc") %>%
     bind_rows(refsamp_run_metrics) %>%
-    distinct() %>%
-    mutate(Run_date = as.Date(.$Run_date, format = "%y-%m-%d")) %>%
+    distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
+    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
     filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-180))
   
 } else {
