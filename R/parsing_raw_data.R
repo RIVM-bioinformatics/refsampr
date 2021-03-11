@@ -48,7 +48,7 @@ find_tool_reports <- function(input_dir=character(),
   } else if (tool == "checkm"){
     pattern_path <- "checkm|CheckM|CHECKM"
   } else if (tool == "bbtools"){
-    pattern_path <- "bbtools_combined"
+    pattern_path <- "bbtools"
   } else {
     stop("argument tool must be either 'quast', 'bbtools' or 'checkm'")
   }
