@@ -54,7 +54,8 @@ find_tool_reports <- function(input_dir=character(),
   }
 
   list.files( input_dir,  pattern = pattern_name, full.names = T, recursive = T) %>%
-    `[`(stringr::str_detect(., pattern_path ))
+    `[`(stringr::str_detect(., pattern_path )) %>%
+    `[`(! stringr::str_detect(., "per_sample"))
 }
 
 
