@@ -1,0 +1,10 @@
+Sample;Genus;avg_phred;Total length_min;Total length_max;# contigs;N50;GC (%)_min;GC (%)_max;Average coverage;completeness;contamination
+B1917;Bordetella;;;;;;;;;;
+ECOL0411;Escherichia;30;4600000;5800000;650;20000;49.5;51.0;10;96;4
+Ecol_0411;Escherichia;30;4600000;5800000;650;20000;49.5;51.0;10;96;4
+ECOL_0411;Escherichia;30;4600000;5800000;650;20000;49.5;51.0;10;96;4
+LIST0001;Listeria;30;2700000;3230000;300;10000;37.6;38.2;10;96;4
+MenW;Neisseria;;;;;;;;;;
+SALA1224;Salmonella;30;4540000;5210000;300;10000;51.6;52.3;10;96;4
+BD08-00202;Shigella;30;4210000;5030000;762;17500;50.3;51.0;10;96;4
+Spn_Hungary19A;Streptococcus;;;;;;;;;;

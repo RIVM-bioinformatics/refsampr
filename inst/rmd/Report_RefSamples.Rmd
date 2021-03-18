@@ -8,6 +8,7 @@ output:
     toc_float: true
     toc_depth: 2
     self_contained: yes
+    df_print: kable
 editor_options: 
   chunk_output_type: inline
 params:
@@ -54,7 +55,7 @@ run_date <- get_run_date(params$input_dir)
 ```{r refsamp_run_metrics}
 
 refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "checkm_report"), 
-                                         run_date = as.character(as.Date(run_date, format = "%y-%m-%d")))
+                                         run_date = run_date)
 
 if ( file.exists(params$history_data) ) {
   
@@ -78,7 +79,8 @@ A set of reference samples are continuously sequenced in our in house sequencing
 
 ```{r refsamp_genus, out.width="30%"}
 
-refsamp:::refsamp_genus %>% knitr::kable()
+genera_criteria <- refsamp:::genera_criteria
+genera_criteria
 
 ```
 
@@ -122,19 +124,6 @@ The N50 relates to contiguity of the assembly. The N50 value is a threshold cont
 
 plot_time_metrics(history_data, "N50") + 
   labs(y = "N50 (bp)", x = "") +
-   scale_y_continuous( label = comma_format(accuracy = 1) )
-
-```
-
-### L50
-
-L50
-  : Smallest number of contigs whose length sum makes up half of genome size [REF](https://en.wikipedia.org/wiki/N50,_L50,_and_related_statistics).
-
-```{r plot_L50}
-
-plot_time_metrics(history_data, "L50") + 
-  labs(y = "L50", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
 
 ```

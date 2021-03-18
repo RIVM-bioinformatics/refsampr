@@ -18,9 +18,19 @@ get_run_date <- function(input_dir){
     input_dir <- basename(input_dir)
   }
 
-  input_dir %>%
+  date_dir <- input_dir %>%
     stringr::str_extract("\\d{6}") %>%
-    purrr::map_chr(stringr::str_replace, "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3")
+    purrr::map_chr(stringr::str_replace,
+                   "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3")
+
+  if( difftime(as.Date(date_dir, format = "%y-%m-%d"), Sys.Date(), unit = "days") %>%
+      as.numeric() %>% abs() > 3650) {
+    warning("The date is too far in the past or in the future.
+            This might be an error in your folder name.
+            Make sure that the date is included in the folder name in the format 'yymmdd'.")
+  }
+
+  date_dir
 
 }
 
@@ -175,7 +185,7 @@ merging_by_sample <- function(vector_w_dataframes, run_date){
 
   # Add genus name and run_date
   merged_dataset <- merged_dataset %>%
-    left_join(refsamp_genus, by = "Sample")  %>%
+    left_join(genera_criteria[c("Sample", "Genus")], by = "Sample")  %>%
     mutate("Run_date" = run_date)
 
   return(merged_dataset)
