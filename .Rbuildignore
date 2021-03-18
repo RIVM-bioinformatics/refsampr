@@ -3,3 +3,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^R/dev_functions\.R$
+^\.github$
+^README\.Rmd$
