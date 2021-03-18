@@ -23,7 +23,7 @@ get_run_date <- function(input_dir){
     purrr::map_chr(stringr::str_replace,
                    "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3")
 
-  if( difftime(as.Date(date_dir, format = "%y-%m-%d"), Sys.Date(), unit = "days") %>%
+  if( difftime(as.Date(date_dir, format = "%y-%m-%d"), Sys.Date(), units = "days") %>%
       as.numeric() %>% abs() > 3650) {
     warning("The date is too far in the past or in the future.
             This might be an error in your folder name.
@@ -45,6 +45,7 @@ get_run_date <- function(input_dir){
 #'   directory.
 #'
 #' @importFrom dplyr %>%
+#' @importFrom stringr str_detect
 #'
 find_tool_reports <- function(input_dir=character(),
                               tool=c("quast", "bbtools", "checkm")){
@@ -76,7 +77,8 @@ find_tool_reports <- function(input_dir=character(),
 #'
 #' @return Tibble containing the tsv report
 #'
-#' @importFrom dplyr %>%
+#' @import dplyr
+#' @importFrom purrr map
 #'
 #'
 read_tsv_report <- function(file_path){
@@ -106,7 +108,7 @@ read_tsv_report <- function(file_path){
 #'   for this QC report
 #' @export
 #'
-#' @importFrom dplyr %>%
+#' @import dplyr
 #'
 extract_quast <- function(input_dir = character()){
   file_path <- find_tool_reports(input_dir, "quast")
@@ -123,7 +125,7 @@ extract_quast <- function(input_dir = character()){
 #'   for this QC report.
 #' @export
 #'
-#' @importFrom dplyr %>%
+#' @import dplyr
 #'
 extract_bbtools <- function(input_dir = character()){
   file_path <- find_tool_reports(input_dir, "bbtools")
@@ -141,7 +143,7 @@ extract_bbtools <- function(input_dir = character()){
 #'   for this QC report
 #' @export
 #'
-#' @importFrom dplyr %>%
+#' @import dplyr
 #'
 extract_checkm <- function(input_dir = character()){
   file_path <- find_tool_reports(input_dir, "checkm")
@@ -168,9 +170,13 @@ extract_checkm <- function(input_dir = character()){
 #'   bound by the 'Sample' column.
 #' @export
 #'
+#' @importFrom purrr map
+#' @import dplyr
+#'
 merging_by_sample <- function(vector_w_dataframes, run_date){
   stopifnot(is.character(vector_w_dataframes))
   stopifnot(is.character(run_date))
+  stopifnot(length(vector_w_dataframes) >= 2)
 
   # Read datasets and make sure they have a "Sample" column
   datasets_to_merge <- vector_w_dataframes %>%

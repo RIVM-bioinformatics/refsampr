@@ -19,8 +19,9 @@
 #'   quality criterion.
 #'
 #' @import dplyr
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_detect
 #'
-#' @examples get_accepted_criteria(genus = "Salmonella", criterium = "GC (%)")
 #'
 get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred",
                                                        "Total length",
@@ -66,6 +67,8 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
 #' @export
 #'
 #' @import ggplot2
+#' @importFrom dplyr bind_rows
+#' @importFrom purrr map
 #'
 plot_time_metrics <- function(dataset, metric){
   stopifnot("Sample" %in% colnames(dataset))
@@ -118,6 +121,10 @@ plot_time_metrics <- function(dataset, metric){
 #'
 #' @return Html report (file name taken from output_report parameter) and a csv
 #'   file with the history data.
+#'
+#' @importFrom stringr str_detect
+#' @import rmarkdown
+#'
 #' @export
 #'
 make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
