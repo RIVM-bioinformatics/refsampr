@@ -105,7 +105,8 @@ plot_time_metrics <- function(dataset, metric){
     scale_color_brewer(palette = "Dark2", na.value = "gray") +
     facet_wrap( ~ Genus) +
     theme_light()+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    theme(axis.text.x = element_text(angle = 90, hjust = 1),
+          strip.background = element_rect(fill = "#8882ae", colour = "#8882ae"))
 }
 
 
