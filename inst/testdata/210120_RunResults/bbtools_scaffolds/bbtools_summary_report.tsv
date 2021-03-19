@@ -1,0 +1,2 @@
+Sample	Reads	Mapped reads	Mapped bases	Ref scaffolds	Ref bases	Percent mapped	Percent proper pairs	Average coverage	Standard deviation	Percent scaffolds with any coverage	Percent of reference bases covered	Time	
+SALA1224	4327837	4324850	564592035	41	4892967	99.931	99.492	115.388	29.993	100.00	99.99	15.320 seconds.	
