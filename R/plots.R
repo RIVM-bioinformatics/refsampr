@@ -86,7 +86,9 @@ plot_time_metrics <- function(dataset, metric){
   # Only the genus ran in the last run will be coloured
   max_date <- max(dataset$Run_date)
   dataset$is_last <- factor(dataset$Run_date == max_date, levels = c(TRUE, FALSE))
-  last_genus <- dataset$Genus[dataset$is_last]
+  last_genus <- filter(dataset, is_last == TRUE) %>%
+    `[[`("Genus") %>%
+    unique()
   dataset$is_last_genus <- factor(dataset$Genus %in% last_genus, levels = c(TRUE, FALSE))
 
   plot_base <- ggplot( dataset, aes(x = Run_date, y = !!as.name(metric),
@@ -109,8 +111,8 @@ plot_time_metrics <- function(dataset, metric){
   plot_base +
     #geom_smooth( formula = y ~ x, show.legend = F, method = "lm") +
     geom_line(size = 1, aes(color = is_last_genus), alpha = 0.7) +
-    geom_point(size = 3)+
-    scale_color_manual(values = c("#f46631", "gray"), na.value = "gray") +
+    geom_point(size = 2)+
+    scale_color_manual(values = c("#f46631", "darkgray"), na.value = "gray") +
     facet_wrap( ~ Genus) +
     theme_light()+
     theme(axis.text.x = element_text(angle = 90, hjust = 1),

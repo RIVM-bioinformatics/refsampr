@@ -66,7 +66,7 @@ if ( file.exists(params$history_data) ) {
   history_data <- history_data %>%
     bind_rows(refsamp_run_metrics) %>%
     distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
-    mutate(Run_date = as.Date(.$Run_date, format = "%y-%m-%d")) %>%
+    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
     filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-360))
   
 } else {
