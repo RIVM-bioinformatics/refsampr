@@ -1,4 +1,4 @@
-Sample;Genus;avg_phred;Total length_min;Total length_max;# contigs;N50;GC (%)_min;GC (%)_max;Average coverage;completeness;contamination
+Sample;Genus;avg_phred;Total_length_min;Total_length_max;no_contigs;N50;GC_perc_min;GC_perc_max;Average_coverage;completeness;contamination
 B1917;Bordetella;;;;;;;;;;
 ECOL0411;Escherichia;30;4600000;5800000;650;20000;49.5;51.0;10;96;4
 Ecol_0411;Escherichia;30;4600000;5800000;650;20000;49.5;51.0;10;96;4

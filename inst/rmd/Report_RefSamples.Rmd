@@ -23,6 +23,7 @@ body {
 text-align: justify}
 </style>
 
+### **Run:** `r basename(params$input_dir)`
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE, 
@@ -38,8 +39,6 @@ library(scales)
 library(refsamp)
 
 ```
-
-**Run folder:** ```r basename(params$input_dir)```
 
 ```{r load_data}
 
@@ -60,11 +59,15 @@ refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "ch
 
 if ( file.exists(params$history_data) ) {
   
-  history_data <- readr::read_csv(params$history_data, col_types = "cnnnnnnnnnnncc") %>%
+  history_data <- readr::read_csv(params$history_data, col_types = "cnnnnnnnnnnncc")
+  
+  names(history_data) <- names(refsamp_run_metrics)
+  
+  history_data <- history_data %>%
     bind_rows(refsamp_run_metrics) %>%
     distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
-    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
-    filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-180))
+    mutate(Run_date = as.Date(.$Run_date, format = "%y-%m-%d")) %>%
+    filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-360))
   
 } else {
   

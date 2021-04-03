@@ -40,10 +40,10 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
   stopifnot(length(criterion) == 1)
   stopifnot(genus %in% genera_criteria$Genus)
 
-  criterion <- dplyr::case_when(criterion == "# contigs" ~ assign("criterion", "X..contigs"),
-                         criterion == "GC (%)" ~ assign("criterion", "GC...."),
-                         TRUE ~ criterion) %>%
-    stringr::str_replace(" ", ".")
+  criterion <- criterion %>%
+    stringr::str_replace(" ", "_") %>%
+    stringr::str_replace("#", "no") %>%
+    stringr::str_replace("(%)", "perc")
 
   columns_criterion <- names(genera_criteria)[stringr::str_detect(names(genera_criteria), criterion)]
 
@@ -77,13 +77,20 @@ plot_time_metrics <- function(dataset, metric){
 
   dataset$Run_date <- as.Date(dataset$Run_date)
 
+  # Get all the criteria for the Genera contained in the dataset
   criteria <- purrr::map(unique(dataset$Genus)[! is.na(unique(dataset$Genus))],
                          get_accepted_criteria, criterion = metric) %>%
     dplyr::bind_rows(.id = "Genus") %>%
     mutate("Genus" = unique(dataset$Genus)[! is.na(unique(dataset$Genus))])
 
+  # Only the genus ran in the last run will be coloured
+  max_date <- max(dataset$Run_date)
+  dataset$is_last <- factor(dataset$Run_date == max_date, levels = c(TRUE, FALSE))
+  last_genus <- dataset$Genus[dataset$is_last]
+  dataset$is_last_genus <- factor(dataset$Genus %in% last_genus, levels = c(TRUE, FALSE))
+
   plot_base <- ggplot( dataset, aes(x = Run_date, y = !!as.name(metric),
-                                    color = Genus))
+                                    color = is_last))
 
   if (ncol(criteria) == 3 ){
     names(criteria)[2:3] <- c("ymin", "ymax")
@@ -100,13 +107,15 @@ plot_time_metrics <- function(dataset, metric){
   }
 
   plot_base +
-    geom_smooth( formula = y ~ x, show.legend = F, method = "lm" ) +
-    geom_point(size = 2)+
-    scale_color_brewer(palette = "Dark2", na.value = "gray") +
+    #geom_smooth( formula = y ~ x, show.legend = F, method = "lm") +
+    geom_line(size = 1, aes(color = is_last_genus), alpha = 0.7) +
+    geom_point(size = 3)+
+    scale_color_manual(values = c("#f46631", "gray"), na.value = "gray") +
     facet_wrap( ~ Genus) +
     theme_light()+
     theme(axis.text.x = element_text(angle = 90, hjust = 1),
-          strip.background = element_rect(fill = "#8882ae", colour = "#8882ae"))
+          strip.background = element_rect(fill = "#8882ae", colour = "#8882ae"),
+          legend.position = "none")
 }
 
 
