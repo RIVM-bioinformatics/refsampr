@@ -78,10 +78,16 @@ plot_time_metrics <- function(dataset, metric){
   dataset$Run_date <- as.Date(dataset$Run_date)
 
   # Get all the criteria for the Genera contained in the dataset
-  criteria <- purrr::map(unique(dataset$Genus)[! is.na(unique(dataset$Genus))],
-                         get_accepted_criteria, criterion = metric) %>%
-    dplyr::bind_rows(.id = "Genus") %>%
-    mutate("Genus" = unique(dataset$Genus)[! is.na(unique(dataset$Genus))])
+  criteria <- purrr::map(unique(dataset$Genus)[!is.na(unique(dataset$Genus))],
+                         get_accepted_criteria, criterion = metric)
+  if(length(criteria)> 1){
+    criteria <- criteria %>%
+      dplyr::bind_rows(.id = "Genus")
+  } else {
+    criteria <- as.data.frame(criteria)
+  }
+  criteria <- criteria %>%
+    mutate("Genus" = unique(dataset$Genus)[!is.na(unique(dataset$Genus))])
 
   # Only the genus ran in the last run will be coloured
   max_date <- max(dataset$Run_date)
