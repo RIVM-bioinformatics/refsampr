@@ -13,7 +13,7 @@ editor_options:
   chunk_output_type: inline
 params:
   input_dir:
-    value: "C:/Users/alehd/Documents/Test_refsamp/Juno_results/Juno_results/200922_NB502001_0153_AHGNLNAFX2_0007/"
+    value: "C:/Users/alehd/Documents/Test_refsamp/Juno_results/Juno_results/210425_NB502001_0190_AH7YJ5AFX2_0019/"
   history_data: 
     value: "C:/Users/alehd/Documents/Test_refsamp/out/history_data.csv"
 ---
@@ -64,10 +64,11 @@ if ( file.exists(params$history_data) ) {
   names(history_data) <- names(refsamp_run_metrics)
   
   history_data <- history_data %>%
+    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
     bind_rows(refsamp_run_metrics) %>%
     distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
-    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
-    filter(difftime(Run_date, Sys.Date(), units = "days") %>% as.numeric() %>% `>`(-360))
+    filter(difftime(Run_date, Sys.Date(), units = "days") %>% 
+             as.numeric() %>% `>`(-360))
   
 } else {
   

@@ -1,7 +1,10 @@
 test_that("Able to get the date from the folder name.", {
 
-  expect_equal(get_run_date("juno_results/200922_NB502001_0153_AHGNLNAFX2_0007"),
-    "20-09-22")
+  expect_equal(as.character(get_run_date("juno_results/200922_NB502001_0153_AHGNLNAFX2_0007")),
+    "2020-09-22")
+
+  expect_equal(class(get_run_date("juno_results/200922_NB502001_0153_AHGNLNAFX2_0007")),
+               "Date")
 
   expect_error(get_run_date("juno_results/AHGNLNAFX2_0007"))
 
