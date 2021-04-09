@@ -21,7 +21,8 @@ get_run_date <- function(input_dir){
   date_dir <- input_dir %>%
     stringr::str_extract("\\d{6}") %>%
     purrr::map_chr(stringr::str_replace,
-                   "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3")
+                   "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3") %>%
+    as.Date( , format = "%y-%m-%d")
 
   if( difftime(as.Date(date_dir, format = "%y-%m-%d"), Sys.Date(), units = "days") %>%
       as.numeric() %>% abs() > 3650) {
@@ -175,7 +176,7 @@ extract_checkm <- function(input_dir = character()){
 #'
 merging_by_sample <- function(vector_w_dataframes, run_date){
   stopifnot(is.character(vector_w_dataframes))
-  stopifnot(is.character(run_date))
+  stopifnot(class(run_date) == "Date")
   stopifnot(length(vector_w_dataframes) >= 2)
 
   # Read datasets and make sure they have a "Sample" column
