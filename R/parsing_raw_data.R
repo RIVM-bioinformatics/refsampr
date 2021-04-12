@@ -2,8 +2,9 @@
 
 #' Get run date from iRODS collection name of Juno output.
 #'
-#' @param input_dir Collection name of Juno output as assigned by iRODS in
+#' @param input_string Collection name of Juno output as assigned by iRODS in
 #'   previous pipeline. It MUST start with the date in the format "yymmdd".
+#'   Alternatively, a character vector with the form yyddmm.
 #'
 #' @return String with date-like format (yy-mm-dd).
 #' @export
@@ -11,27 +12,32 @@
 #' @importFrom dplyr %>%
 #'
 #' @examples get_run_date("juno_results/200922_NB502001_0153_AHGNLNAFX2_0007")
-get_run_date <- function(input_dir){
-  stopifnot( stringr::str_detect(input_dir, "\\d{6}") )
+#' @examples get_run_date("200922")
+get_run_date <- function(input_string){
+  stopifnot( stringr::str_detect(input_string, "\\d{6}") )
 
-  if ( stringr::str_detect(input_dir, "/") ){
-    input_dir <- basename(input_dir)
+  if ( stringr::str_detect(input_string, "/") ){
+    input_string <- basename(input_string)
   }
 
-  date_dir <- input_dir %>%
+  date_run <- input_string %>%
     stringr::str_extract("\\d{6}") %>%
     purrr::map_chr(stringr::str_replace,
                    "(\\d{2})(\\d{2})(\\d{2})$","\\1-\\2-\\3") %>%
-    as.Date( , format = "%y-%m-%d")
+    as.Date(format = "%y-%m-%d")
 
-  if( difftime(as.Date(date_dir, format = "%y-%m-%d"), Sys.Date(), units = "days") %>%
-      as.numeric() %>% abs() > 3650) {
+  if( difftime(date_run,
+               Sys.Date(),
+               units = "days") %>%
+      as.numeric() %>%
+      abs() > 3650) {
     warning("The date is too far in the past or in the future.
             This might be an error in your folder name.
-            Make sure that the date is included in the folder name in the format 'yymmdd'.")
+            Make sure that the date is included in the folder name or the provided run date.
+            Make sure also that the date is provided in the format 'yymmdd'.")
   }
 
-  date_dir
+  date_run
 
 }
 
@@ -175,8 +181,10 @@ extract_checkm <- function(input_dir = character()){
 #' @import dplyr
 #'
 merging_by_sample <- function(vector_w_dataframes, run_date){
+
+  run_date <- as.numeric(run_date)
+
   stopifnot(is.character(vector_w_dataframes))
-  stopifnot(class(run_date) == "Date")
   stopifnot(length(vector_w_dataframes) >= 2)
 
   # Read datasets and make sure they have a "Sample" column
@@ -187,13 +195,16 @@ merging_by_sample <- function(vector_w_dataframes, run_date){
   # Merge datasets by Sample
   merged_dataset <- datasets_to_merge[[1]]
   for(i in 2:length(datasets_to_merge)){
-    merged_dataset <- dplyr::full_join(merged_dataset, datasets_to_merge[[i]], by = "Sample")
+    merged_dataset <- dplyr::full_join(merged_dataset,
+                                       datasets_to_merge[[i]],
+                                       by = "Sample")
   }
 
   # Add genus name and run_date
   merged_dataset <- merged_dataset %>%
-    left_join(genera_criteria[c("Sample", "Genus")], by = "Sample")  %>%
-    mutate("Run_date" = run_date)
+    left_join(genera_criteria[c("Sample", "Genus")],
+              by = "Sample")  %>%
+    mutate("Run_date" = as.Date(run_date, "1970-01-01"))
 
   return(merged_dataset)
 

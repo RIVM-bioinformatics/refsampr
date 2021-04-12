@@ -16,6 +16,8 @@ params:
     value: "C:/Users/alehd/Documents/Test_refsamp/Juno_results/Juno_results/210425_NB502001_0190_AH7YJ5AFX2_0019/"
   history_data: 
     value: "C:/Users/alehd/Documents/Test_refsamp/out/history_data.csv"
+  run_date:
+    value: "x"
 ---
 
 <style>
@@ -48,13 +50,20 @@ checkm_report <- extract_checkm(params$input_dir)
 
 bbtools_report <- extract_bbtools(params$input_dir)
 
-run_date <- get_run_date(params$input_dir)
+if(params$run_date == "x"){
+  run_date <- get_run_date(params$input_dir)
+} else {
+  run_date <- get_run_date(params$run_date)
+}
+
 
 ```
 
 ```{r refsamp_run_metrics}
 
-refsamp_run_metrics <- merging_by_sample(c("bbtools_report", "quast_report", "checkm_report"), 
+refsamp_run_metrics <- merging_by_sample(c("bbtools_report", 
+                                           "quast_report", 
+                                           "checkm_report"), 
                                          run_date = run_date)
 
 if ( file.exists(params$history_data) ) {
@@ -64,7 +73,8 @@ if ( file.exists(params$history_data) ) {
   names(history_data) <- names(refsamp_run_metrics)
   
   history_data <- history_data %>%
-    mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
+    mutate(Run_date = as.Date(.$Run_date, 
+                              format = "%Y-%m-%d")) %>%
     bind_rows(refsamp_run_metrics) %>%
     distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
     filter(difftime(Run_date, Sys.Date(), units = "days") %>% 

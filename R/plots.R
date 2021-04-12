@@ -145,7 +145,10 @@ plot_time_metrics <- function(dataset, metric){
 #'
 #' @export
 #'
-make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
+make_refsamp_report <- function(input_dir,
+                                output_report,
+                                history_data = NULL,
+                                run_date){
   stopifnot(dir.exists(input_dir))
   stopifnot(dir.exists(dirname(output_report)))
   stopifnot(stringr::str_detect(output_report, ".html$"))
@@ -155,7 +158,8 @@ make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
 
 
   if( is.null(history_data) ){
-    history_data <- paste0( dirname(output_report), "/history_data.csv" )
+    history_data <- paste0( dirname(output_report),
+                            "/history_data.csv" )
   } else{
     stopifnot(dir.exists(dirname(history_data)))
     stopifnot(stringr::str_detect(history_data, ".csv$"))
@@ -166,5 +170,6 @@ make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
                    output_file = output_report,
                    envir = parent.frame(), # Explanation: https://github.com/rstudio/rmarkdown/issues/934
                    params = list(input_dir = input_dir,
-                                 history_data = history_data))
+                                 history_data = history_data,
+                                 run_date = run_date))
 }
