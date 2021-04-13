@@ -156,7 +156,7 @@ make_refsamp_report <- function(input_dir,
     input_dir <- normalizePath(input_dir, winslash = "/")
   }
 
-  if(! stringr::str_starts(output_dir, "/")){
+  if(! stringr::str_starts(output_report, "/")){
     output_report <- normalizePath(output_report, winslash = "/")
   }
 
@@ -167,7 +167,7 @@ make_refsamp_report <- function(input_dir,
   } else{
     stopifnot(dir.exists(dirname(history_data)))
     stopifnot(stringr::str_detect(history_data, ".csv$"))
-    if(! stringr::str_starts(input_dir, "/")){
+    if(! stringr::str_starts(history_data, "/")){
       history_data <- normalizePath(history_data, winslash = "/")
     }
   }
