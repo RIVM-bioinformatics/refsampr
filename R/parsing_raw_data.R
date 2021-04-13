@@ -170,8 +170,8 @@ extract_checkm <- function(input_dir = character()){
 #'   merge. Each dataset MUST contain at least one column called "Sample" that
 #'   is common between them.
 #'
-#' @param run_date Character vector with the date in the format "yy-mm-dd" as
-#'   given by refsamp::get_run_date()
+#' @param run_date Character or date vector with the date in the format
+#'   "yy-mm-dd" as given by refsamp::get_run_date()
 #'
 #' @return Tibble with the different datasets provided in vector_w_dataframes
 #'   bound by the 'Sample' column.

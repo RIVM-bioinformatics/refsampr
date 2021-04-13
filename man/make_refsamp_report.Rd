@@ -4,7 +4,12 @@
 \alias{make_refsamp_report}
 \title{Make reference samples report}
 \usage{
-make_refsamp_report(input_dir, output_report, history_data = NULL)
+make_refsamp_report(
+  input_dir,
+  output_report,
+  history_data = NULL,
+  run_date = "x"
+)
 }
 \arguments{
 \item{input_dir}{Path to directory with results from Juno pipeline.

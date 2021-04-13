@@ -115,7 +115,6 @@ plot_time_metrics <- function(dataset, metric){
   }
 
   plot_base +
-    #geom_smooth( formula = y ~ x, show.legend = F, method = "lm") +
     geom_line(size = 1, aes(color = is_last_genus), alpha = 0.7) +
     geom_point(size = 2)+
     scale_color_manual(values = c("#f46631", "darkgray"), na.value = "gray") +
@@ -148,13 +147,18 @@ plot_time_metrics <- function(dataset, metric){
 make_refsamp_report <- function(input_dir,
                                 output_report,
                                 history_data = NULL,
-                                run_date){
+                                run_date = "x"){
   stopifnot(dir.exists(input_dir))
   stopifnot(dir.exists(dirname(output_report)))
   stopifnot(stringr::str_detect(output_report, ".html$"))
 
-  input_dir <- normalizePath(input_dir, winslash = "/")
-  output_report <- normalizePath(output_report, winslash = "/")
+  if(! stringr::str_starts(input_dir, "/")){
+    input_dir <- normalizePath(input_dir, winslash = "/")
+  }
+
+  if(! stringr::str_starts(output_dir, "/")){
+    output_report <- normalizePath(output_report, winslash = "/")
+  }
 
 
   if( is.null(history_data) ){
@@ -163,7 +167,9 @@ make_refsamp_report <- function(input_dir,
   } else{
     stopifnot(dir.exists(dirname(history_data)))
     stopifnot(stringr::str_detect(history_data, ".csv$"))
-    history_data <- normalizePath(history_data, winslash = "/")
+    if(! stringr::str_starts(input_dir, "/")){
+      history_data <- normalizePath(history_data, winslash = "/")
+    }
   }
 
   rmarkdown::render(system.file("rmd", "Report_RefSamples.Rmd", package = "refsamp"),

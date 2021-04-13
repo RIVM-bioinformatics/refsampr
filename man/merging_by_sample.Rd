@@ -11,8 +11,8 @@ merging_by_sample(vector_w_dataframes, run_date)
 merge. Each dataset MUST contain at least one column called "Sample" that
 is common between them.}
 
-\item{run_date}{Character vector with the date in the format "yy-mm-dd" as
-given by refsamp::get_run_date()}
+\item{run_date}{Character or date vector with the date in the format
+"yy-mm-dd" as given by refsamp::get_run_date()}
 }
 \value{
 Tibble with the different datasets provided in vector_w_dataframes

@@ -4,11 +4,12 @@
 \alias{get_run_date}
 \title{Get run date from iRODS collection name of Juno output.}
 \usage{
-get_run_date(input_dir)
+get_run_date(input_string)
 }
 \arguments{
-\item{input_dir}{Collection name of Juno output as assigned by iRODS in
-previous pipeline. It MUST start with the date in the format "yymmdd".}
+\item{input_string}{Collection name of Juno output as assigned by iRODS in
+previous pipeline. It MUST start with the date in the format "yymmdd".
+Alternatively, a character vector with the form yyddmm.}
 }
 \value{
 String with date-like format (yy-mm-dd).
@@ -18,4 +19,5 @@ Get run date from iRODS collection name of Juno output.
 }
 \examples{
 get_run_date("juno_results/200922_NB502001_0153_AHGNLNAFX2_0007")
+get_run_date("200922")
 }
