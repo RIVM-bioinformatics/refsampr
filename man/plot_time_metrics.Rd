@@ -4,7 +4,7 @@
 \alias{plot_time_metrics}
 \title{Plot metric vs time}
 \usage{
-plot_time_metrics(dataset, metric)
+plot_time_metrics(dataset, metric, scales = "fixed")
 }
 \arguments{
 \item{dataset}{Data frame to use for plot. It must contain at least one
@@ -13,6 +13,12 @@ character column named "Run_date" (yy-mm-dd) and one character column named
 
 \item{metric}{Character vector length 1 with the name of the metric to plot
 (metric should be one of the column names of dataset)}
+
+\item{scales}{Parameter to be passed to facet_wrap. It determines whether all
+axes are fixed for all panels in a plot (one panel per genus/species). It
+can take the values: 'fixed' (default), 'free_x' (y fixed and x different
+per panel), 'free_y' (x fixed and y different per panel) or 'free'(both
+free).}
 }
 \value{
 ggplot object containing the plot to be added

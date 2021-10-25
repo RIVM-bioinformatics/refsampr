@@ -13,9 +13,9 @@ editor_options:
   chunk_output_type: inline
 params:
   input_dir:
-    value: "C:/Users/alehd/Documents/Test_refsamp/Juno_results/Juno_results/210425_NB502001_0190_AH7YJ5AFX2_0019/"
+    value: "../testdata/210120_RunResults"
   history_data: 
-    value: "C:/Users/alehd/Documents/Test_refsamp/out/history_data.csv"
+    value: "../testdata/210120_RunResults/example_history_data.csv"
 ---
 
 <style>
@@ -67,7 +67,7 @@ if ( file.exists(params$history_data) ) {
     mutate(Run_date = as.Date(.$Run_date, format = "%Y-%m-%d")) %>%
     bind_rows(refsamp_run_metrics) %>%
     distinct(across(c(Sample, Run_date)), .keep_all = TRUE) %>%
-    filter(difftime(Run_date, Sys.Date(), units = "days") %>% 
+    filter(difftime(Run_date, run_date, units = "days") %>% 
              as.numeric() %>% `>`(-360))
   
 } else {
@@ -101,7 +101,7 @@ In the Juno pipeline, scaffolds smaller than 500 nt are filtered out. This plot 
 
 ```{r plot_contigs}
 
-plot_time_metrics(history_data, "# contigs") +
+plot_time_metrics(history_data, "# contigs", scales = 'free_y') +
   labs(y = "Number of contigs ( >500nt )", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 0.1) )
 
@@ -116,7 +116,7 @@ Total length
 
 ```{r plot_length}
 
-plot_time_metrics(history_data, "Total length") + 
+plot_time_metrics(history_data, "Total length", scales = 'free_y') + 
    labs(y = "Total length", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
  
@@ -133,7 +133,7 @@ The N50 relates to contiguity of the assembly. The N50 value is a threshold cont
 
 ```{r plot_N50}
 
-plot_time_metrics(history_data, "N50") + 
+plot_time_metrics(history_data, "N50", scales = 'free_y') + 
   labs(y = "N50 (bp)", x = "") +
    scale_y_continuous( label = comma_format(accuracy = 1) )
 
@@ -150,7 +150,7 @@ A deviation from the actual (literature reported) GC content in the reference ge
 
 ```{r}
 
-plot_time_metrics(history_data, "GC (%)") + 
+plot_time_metrics(history_data, "GC (%)", scales = 'free_y') + 
   labs(x = NULL, y = "GC content") +
   scale_y_continuous( label = percent_format(accuracy = 0.1, scale = 1) )
   

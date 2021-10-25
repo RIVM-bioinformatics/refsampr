@@ -62,6 +62,11 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
 #'   "Sample".
 #' @param metric Character vector length 1 with the name of the metric to plot
 #'   (metric should be one of the column names of dataset)
+#' @param scales Parameter to be passed to facet_wrap. It determines whether all
+#'   axes are fixed for all panels in a plot (one panel per genus/species). It
+#'   can take the values: 'fixed' (default), 'free_x' (y fixed and x different
+#'   per panel), 'free_y' (x fixed and y different per panel) or 'free'(both
+#'   free).
 #'
 #' @return ggplot object containing the plot to be added
 #' @export
@@ -70,10 +75,11 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
 #' @importFrom dplyr bind_rows
 #' @importFrom purrr map
 #'
-plot_time_metrics <- function(dataset, metric){
+plot_time_metrics <- function(dataset, metric, scales='fixed'){
   stopifnot("Sample" %in% colnames(dataset))
   stopifnot("Run_date" %in% colnames(dataset))
   stopifnot(metric %in% colnames(dataset))
+  stopifnot(scales %in% c('fixed', 'free', 'free_x', 'free_y'))
 
   dataset$Run_date <- as.Date(dataset$Run_date)
 
@@ -115,11 +121,10 @@ plot_time_metrics <- function(dataset, metric){
   }
 
   plot_base +
-    #geom_smooth( formula = y ~ x, show.legend = F, method = "lm") +
     geom_line(size = 1, aes(color = is_last_genus), alpha = 0.7) +
     geom_point(size = 2)+
     scale_color_manual(values = c("#f46631", "darkgray"), na.value = "gray") +
-    facet_wrap( ~ Genus) +
+    facet_wrap( ~ Genus, scales = scales) +
     theme_light()+
     theme(axis.text.x = element_text(angle = 90, hjust = 1),
           strip.background = element_rect(fill = "#8882ae", colour = "#8882ae"),
