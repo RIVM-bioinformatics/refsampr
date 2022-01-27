@@ -8,7 +8,7 @@ Description: At the RIVM, we use the Juno_pipeline (https://github.com/AleSR13/J
     included a set of reference samples that let us monitor the quality of the data produced
     by the NGS sequencing facility. This package helps generating quality control (QC) reports
     for monitoring the quality of our data.
-License: AGPL-3
+License: AGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:

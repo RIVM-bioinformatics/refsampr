@@ -4,18 +4,19 @@
 \alias{make_refsamp_report}
 \title{Make reference samples report}
 \usage{
-make_refsamp_report(input_dir, output_report, history_data = NULL)
+make_refsamp_report(input_dir, output_report, history_data = NULL, run_name)
 }
 \arguments{
-\item{input_dir}{Path to directory with results from Juno pipeline.
-Collection name of Juno output as assigned by iRODS in previous pipeline.
-It MUST start with the date in the format "yymmdd"}
+\item{input_dir}{Path to directory with results from Juno pipeline.}
 
 \item{output_report}{Desired file name of the output report (.html
 extension).}
 
 \item{history_data}{Path to history_data. If not provided, a history_data.csv
 file will be created in the same directory where the output_report is.}
+
+\item{run_name}{Collection name of Juno output as assigned by iRODS in
+previous pipeline.It MUST start with the date in the format "yymmdd".}
 }
 \value{
 Html report (file name taken from output_report parameter) and a csv

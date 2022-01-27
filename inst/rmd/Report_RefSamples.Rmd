@@ -16,6 +16,8 @@ params:
     value: "../testdata/210120_RunResults"
   history_data: 
     value: "../testdata/210120_RunResults/example_history_data.csv"
+  run_name:
+    value: "210120_RunResults"
 ---
 
 <style>
@@ -23,7 +25,7 @@ body {
 text-align: justify}
 </style>
 
-### **Run:** `r basename(params$input_dir)`
+### **Run:** `r params$run_name`
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE, 
@@ -48,7 +50,7 @@ checkm_report <- extract_checkm(params$input_dir)
 
 bbtools_report <- extract_bbtools(params$input_dir)
 
-run_date <- get_run_date(params$input_dir)
+run_date <- get_run_date(params$run_name)
 
 ```
 

@@ -135,12 +135,12 @@ plot_time_metrics <- function(dataset, metric, scales='fixed'){
 #' Make reference samples report
 #'
 #' @param input_dir Path to directory with results from Juno pipeline.
-#'   Collection name of Juno output as assigned by iRODS in previous pipeline.
-#'   It MUST start with the date in the format "yymmdd"
 #' @param output_report Desired file name of the output report (.html
 #'   extension).
 #' @param history_data Path to history_data. If not provided, a history_data.csv
 #'   file will be created in the same directory where the output_report is.
+#' @param run_name Collection name of Juno output as assigned by iRODS in
+#'   previous pipeline.It MUST start with the date in the format "yymmdd".
 #'
 #' @return Html report (file name taken from output_report parameter) and a csv
 #'   file with the history data.
@@ -150,7 +150,11 @@ plot_time_metrics <- function(dataset, metric, scales='fixed'){
 #'
 #' @export
 #'
-make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
+make_refsamp_report <- function(
+  input_dir, output_report,
+  history_data = NULL,
+  run_name
+  ){
   stopifnot(dir.exists(input_dir))
   stopifnot(dir.exists(dirname(output_report)))
   stopifnot(stringr::str_detect(output_report, ".html$"))
@@ -171,5 +175,6 @@ make_refsamp_report <- function(input_dir, output_report, history_data = NULL){
                    output_file = output_report,
                    envir = parent.frame(), # Explanation: https://github.com/rstudio/rmarkdown/issues/934
                    params = list(input_dir = input_dir,
-                                 history_data = history_data))
+                                 history_data = history_data,
+                                 run_name = run_name))
 }

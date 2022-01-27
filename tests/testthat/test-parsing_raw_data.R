@@ -14,6 +14,22 @@ test_that("Able to get the date from the folder name.", {
 
 })
 
+test_that("Able to get the date from the run name.", {
+
+  expect_equal(as.character(get_run_date("200922_NB502001_0153_AHGNLNAFX2_0007")),
+               "2020-09-22")
+
+  expect_equal(class(get_run_date("200922_NB502001_0153_AHGNLNAFX2_0007")),
+               "Date")
+
+  expect_error(get_run_date("AHGNLNAFX2_0007"))
+
+  expect_warning(get_run_date("500202_AHGNLNAFX2_0007"))
+
+  expect_warning(get_run_date("000202_AHGNLNAFX2_0007"))
+
+})
+
 
 test_that("Able to find reports for each tool in a file.", {
 
