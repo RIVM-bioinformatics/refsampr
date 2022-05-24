@@ -38,8 +38,7 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
   }
   stopifnot(length(genus) == 1)
   stopifnot(length(criterion) == 1)
-  stopifnot(genus %in% genera_criteria$Genus)
-
+  
   criterion <- criterion %>%
     stringr::str_replace(" ", "_") %>%
     stringr::str_replace("#", "no") %>%
@@ -47,10 +46,16 @@ get_accepted_criteria <- function(genus = character(), criterion = c("avg_phred"
 
   columns_criterion <- names(genera_criteria)[stringr::str_detect(names(genera_criteria), criterion)]
 
-  genera_criteria %>%
+  criteria_for_genus <- genera_criteria %>%
     dplyr::filter(Genus == genus) %>%
     `[`(c("Genus", columns_criterion)) %>%
     `[`(1,)
+
+  # If genus was not in table, the first column should not be NA
+  if (is.na(criteria_for_genus[1,1])){
+    criteria_for_genus[1,1] <- genus
+  }
+  return(criteria_for_genus)
 
 }
 
@@ -105,10 +110,11 @@ plot_time_metrics <- function(dataset, metric, scales='fixed'){
 
   plot_base <- ggplot( dataset, aes(x = Run_date, y = !!as.name(metric),
                                     color = is_last))
-
+  
   if (ncol(criteria) == 3 ){
     names(criteria)[2:3] <- c("ymin", "ymax")
-
+    criteria[,2] <- as.numeric(criteria[,2])
+    criteria[,3] <- as.numeric(criteria[,3])
     plot_base <- plot_base  +
       geom_hline(data = criteria, aes(yintercept = ymax), linetype = 2) +
       geom_hline(data = criteria, aes(yintercept = ymin), linetype = 2)
@@ -116,6 +122,7 @@ plot_time_metrics <- function(dataset, metric, scales='fixed'){
   } else if (ncol(criteria) == 2 & ! is.na(criteria[1,2])){
 
     names(criteria)[2] <- c("yintercept")
+    criteria[,2] <- as.numeric(criteria[,2])
     plot_base <- plot_base +
       geom_hline(data = criteria, aes(yintercept = yintercept), linetype = 2)
   }

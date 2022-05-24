@@ -13,9 +13,9 @@ editor_options:
   chunk_output_type: inline
 params:
   input_dir:
-    value: "../testdata/210120_RunResults"
+    value: "../refsamp/input/220519_NB502001_0327_AHLTGCAFX3_0017"
   history_data: 
-    value: "../testdata/210120_RunResults/example_history_data.csv"
+    value: ".../refsamp/input/history_data.csv"
   run_name:
     value: "210120_RunResults"
 ---
